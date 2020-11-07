@@ -1,7 +1,7 @@
 FROM phpmyadmin/phpmyadmin:5.0
 MAINTAINER "Iordanis Kostelidis <JorKostelidis@GMail.com>"
 
-ARG DOMAIN="phpmyadmin.beta.hermesteam.eu"
+ARG DOMAIN="phpmyadmin.hermesteam.eu"
 
 COPY ./ssl_certificates/server.crt /docker/etc/apache2/ssl/server.crt
 COPY ./ssl_certificates/server.key /docker/etc/apache2/ssl/server.key
