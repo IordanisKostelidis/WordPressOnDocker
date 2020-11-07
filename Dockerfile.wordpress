@@ -9,8 +9,9 @@ COPY ./config/apache2/sites_available/default-ssl.conf /etc/apache2/sites-availa
 COPY ./config/apache2/apache2.conf /etc/apache2/apache2.conf
 
 RUN a2enmod ssl \
- && ln -s /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/000-default-ssl.conf \
- && /etc/init.d/apache2 restart
+ && a2ensite 000-default \
+ && /etc/init.d/apache2 restart \
+ && a2ensite default-ssl
 
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
