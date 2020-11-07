@@ -12,6 +12,11 @@ RUN a2enmod ssl \
  && ln -s /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/000-default-ssl.conf \
  && /etc/init.d/apache2 restart
 
+RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
+
+RUN sed -i 's/post_max_size = 8M/post_max_size = 64M/g' /usr/local/etc/php/php.ini \
+ && sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 64M/g' /usr/local/etc/php/php.ini
+
 VOLUME /var/www/html
 
 EXPOSE 443
