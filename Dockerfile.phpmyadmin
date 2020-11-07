@@ -3,6 +3,9 @@ MAINTAINER "Iordanis Kostelidis <JorKostelidis@GMail.com>"
 
 ARG DOMAIN="phpmyadmin.beta.hermesteam.eu"
 
+COPY ./ssl_certificates/server.crt /docker/etc/apache2/ssl/server.crt
+COPY ./ssl_certificates/server.key /docker/etc/apache2/ssl/server.key
+
 RUN sed -i 's/\/etc\/ssl\/certs\/ssl-cert-snakeoil.pem/\/docker\/etc\/apache2\/ssl\/server.crt/g' /etc/apache2/sites-available/default-ssl.conf \
  && sed -i 's/\/etc\/ssl\/private\/ssl-cert-snakeoil.key/\/docker\/etc\/apache2\/ssl\/server.key/g' /etc/apache2/sites-available/default-ssl.conf \
  && sed -i 's/#ServerName www.example.com/ServerName '${DOMAIN}'/g' /etc/apache2/sites-available/000-default.conf \
