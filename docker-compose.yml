@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  mariadb:
+    image: library/mariadb:10.5
+    container_name: mariadb
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  wordpress:
+    image: iordaniskostelidis/wordpress-on-docker
+    build:
+      dockerfile: ./Dockerfile.wordpress
+      context: .
+    container_name: wordpress
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    volumes:
+      - ./ssl_certificates:/docker/etc/apache2/ssl:ro
+    environment:
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+    depends_on:
+      - mariadb
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.0
+    container_name: phpmyadmin
+    ports:
+      - "8012:80"
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mariadb
+    external_links:
+      - mariadb
+
+volumes:
+  mariadb_data:

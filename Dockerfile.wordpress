@@ -1,0 +1,15 @@
+FROM library/wordpress:5.5
+MAINTAINER "Iordanis Kostelidis <JorKostelidis@GMail.com>"
+
+COPY ./ssl_certificates/server.crt /docker/etc/apache2/ssl/server.crt
+COPY ./ssl_certificates/server.key /docker/etc/apache2/ssl/server.key
+
+COPY ./config/apache2/sites_available/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY ./config/apache2/sites_available/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+COPY ./config/apache2/apache2.conf /etc/apache2/apache2.conf
+
+RUN a2enmod ssl \
+ && ln -s /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/000-default-ssl.conf \
+ && /etc/init.d/apache2 restart
+
+EXPOSE 443
