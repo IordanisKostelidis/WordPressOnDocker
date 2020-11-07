@@ -1,0 +1,21 @@
+FROM phpmyadmin/phpmyadmin:5.0
+MAINTAINER "Iordanis Kostelidis <JorKostelidis@GMail.com>"
+
+RUN sed -i 's/\/etc\/ssl\/certs\/ssl-cert-snakeoil.pem/\/docker\/etc\/apache2\/ssl\/server.crt/g' /etc/apache2/sites-available/default-ssl.conf \
+ && sed -i 's/\/etc\/ssl\/private\/ssl-cert-snakeoil.key/\/docker\/etc\/apache2\/ssl\/server.key/g' /etc/apache2/sites-available/default-ssl.conf
+
+RUN a2enmod ssl \
+ && a2enmod proxy \
+ && a2enmod proxy_http \
+ && a2enmod proxy_ajp \
+ && a2enmod rewrite \
+ && a2enmod deflate \
+ && a2enmod headers \
+ && a2enmod proxy_balancer  \
+ && a2enmod proxy_connect  \
+ && a2enmod proxy_html \
+ && a2ensite 000-default \
+ && /etc/init.d/apache2 restart \
+ && a2ensite default-ssl
+
+EXPOSE 443

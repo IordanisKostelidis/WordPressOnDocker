@@ -6,12 +6,28 @@ COPY ./ssl_certificates/server.key /docker/etc/apache2/ssl/server.key
 
 COPY ./config/apache2/sites_available/000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY ./config/apache2/sites_available/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+
+COPY ./config/apache2/sites_available/phpmyadmin.conf /etc/apache2/sites-available/phpmyadmin.conf
+COPY ./config/apache2/sites_available/phpmyadmin-ssl.conf /etc/apache2/sites-available/phpmyadmin-ssl.conf
+
 COPY ./config/apache2/apache2.conf /etc/apache2/apache2.conf
 
+
 RUN a2enmod ssl \
+ && a2enmod proxy \
+ && a2enmod proxy_http \
+ && a2enmod proxy_ajp \
+ && a2enmod rewrite \
+ && a2enmod deflate \
+ && a2enmod headers \
+ && a2enmod proxy_balancer  \
+ && a2enmod proxy_connect  \
+ && a2enmod proxy_html  \
  && a2ensite 000-default \
+ && a2ensite phpmyadmin \
  && /etc/init.d/apache2 restart \
- && a2ensite default-ssl
+ && a2ensite default-ssl \
+ && a2ensite phpmyadmin-ssl.conf
 
 RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 

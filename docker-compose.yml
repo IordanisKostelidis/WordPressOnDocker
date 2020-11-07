@@ -12,6 +12,29 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      wordpress_mariadb_network:
+      phpmyadmin_mariadb_network:
+
+  phpmyadmin:
+    image: iordaniskostelidis/phpmyadmin
+    build:
+      dockerfile: Dockerfile.phpmyadmin
+      context: .
+    container_name: phpmyadmin
+    restart: unless-stopped
+    volumes:
+      - ./ssl_certificates:/docker/etc/apache2/ssl:ro
+    environment:
+      PMA_HOST: mariadb
+      PHPMYADMIN_HTTPS_CRT_FILENAME: server.crt
+      PHPMYADMIN_HTTPS_KEY_FILENAME: server.key
+      PHPMYADMIN_TRUST_PROXY_SSL: "true"
+    depends_on:
+      - mariadb
+    networks:
+      phpmyadmin_mariadb_network:
+      wordpress_phpmyadmin_network:
 
   wordpress:
     image: iordaniskostelidis/wordpress-on-docker
@@ -33,18 +56,15 @@ services:
       WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
     depends_on:
       - mariadb
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:5.0
-    container_name: phpmyadmin
-    ports:
-      - "8012:80"
-    restart: unless-stopped
-    environment:
-      PMA_HOST: mariadb
-    external_links:
-      - mariadb
+    networks:
+      wordpress_mariadb_network:
+      wordpress_phpmyadmin_network:
 
 volumes:
   mariadb_data:
   wordpress_data:
+
+networks:
+  wordpress_mariadb_network:
+  phpmyadmin_mariadb_network:
+  wordpress_phpmyadmin_network:
