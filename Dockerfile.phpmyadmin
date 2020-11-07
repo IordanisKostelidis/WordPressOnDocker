@@ -2,7 +2,9 @@ FROM phpmyadmin/phpmyadmin:5.0
 MAINTAINER "Iordanis Kostelidis <JorKostelidis@GMail.com>"
 
 RUN sed -i 's/\/etc\/ssl\/certs\/ssl-cert-snakeoil.pem/\/docker\/etc\/apache2\/ssl\/server.crt/g' /etc/apache2/sites-available/default-ssl.conf \
- && sed -i 's/\/etc\/ssl\/private\/ssl-cert-snakeoil.key/\/docker\/etc\/apache2\/ssl\/server.key/g' /etc/apache2/sites-available/default-ssl.conf
+ && sed -i 's/\/etc\/ssl\/private\/ssl-cert-snakeoil.key/\/docker\/etc\/apache2\/ssl\/server.key/g' /etc/apache2/sites-available/default-ssl.conf \
+ && sed -i 's/#ServerName www.example.com/\ServerName phpmyadmin/g' /etc/apache2/sites-available/000-default.conf \
+ && sed -i 's/ServerAdmin webmaster@localhost/\ServerName phpmyadmin\n\t\tServerAdmin webmaster@localhost/g' /etc/apache2/sites-available/default-ssl.conf
 
 RUN a2enmod ssl \
  && a2enmod proxy \

@@ -27,9 +27,6 @@ services:
       - ./ssl_certificates:/docker/etc/apache2/ssl:ro
     environment:
       PMA_HOST: mariadb
-      PHPMYADMIN_HTTPS_CRT_FILENAME: server.crt
-      PHPMYADMIN_HTTPS_KEY_FILENAME: server.key
-      PHPMYADMIN_TRUST_PROXY_SSL: "true"
     depends_on:
       - mariadb
     networks:
