@@ -3,17 +3,17 @@ MAINTAINER "Iordanis Kostelidis <JorKostelidis@GMail.com>"
 
 ARG PMA_DOMAIN_NAME="phpmyadmin.localhost"
 ARG WEBMASTER_EMAIL="webmaster@localhost"
+ENV TZ="Europe/Athens"
 
-COPY ./ssl_certificates/server.crt /docker/etc/apache2/ssl/server.crt
-COPY ./ssl_certificates/server.key /docker/etc/apache2/ssl/server.key
+COPY ./ssl_certificates /docker/etc/apache2/ssl
 
 RUN sed -i 's/\/etc\/ssl\/certs\/ssl-cert-snakeoil.pem/\/docker\/etc\/apache2\/ssl\/server.crt/g' /etc/apache2/sites-available/default-ssl.conf \
  && sed -i 's/\/etc\/ssl\/private\/ssl-cert-snakeoil.key/\/docker\/etc\/apache2\/ssl\/server.key/g' /etc/apache2/sites-available/default-ssl.conf \
  && sed -i 's/#ServerName www.example.com/ServerName '${PMA_DOMAIN_NAME}'\n\t\tServerAlias '${PMA_DOMAIN_NAME}'/g' /etc/apache2/sites-available/000-default.conf \
  && sed -i 's/ServerAdmin webmaster@localhost/ServerName '${PMA_DOMAIN_NAME}'\n\t\tServerAlias 'www.${PMA_DOMAIN_NAME}'\n\t\tServerAdmin '${WEBMASTER_EMAIL}'/g' /etc/apache2/sites-available/default-ssl.conf \
- && sed -i 's/# vim: syntax=apache ts=4 sw=4 sts=4 sr noet/ServerName '${PMA_DOMAIN_NAME}'\n# vim: syntax=apache ts=4 sw=4 sts=4 sr noet/g' /etc/apache2/apache2.conf
-
-RUN a2enmod ssl \
+ && sed -i 's/# vim: syntax=apache ts=4 sw=4 sts=4 sr noet/ServerName '${PMA_DOMAIN_NAME}'\n# vim: syntax=apache ts=4 sw=4 sts=4 sr noet/g' /etc/apache2/apache2.conf \
+ # Enable Apache Mods
+ && a2enmod ssl \
  && a2enmod proxy \
  && a2enmod proxy_http \
  && a2enmod proxy_ajp \
@@ -23,8 +23,9 @@ RUN a2enmod ssl \
  && a2enmod proxy_balancer  \
  && a2enmod proxy_connect  \
  && a2enmod proxy_html \
- && a2ensite 000-default \
  && /etc/init.d/apache2 restart \
+ # Enable Apache Sites
+ && a2ensite 000-default \
  && a2ensite default-ssl
 
 EXPOSE 443
