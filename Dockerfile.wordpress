@@ -19,32 +19,24 @@ RUN a2enmod ssl \
  && a2enmod proxy_balancer  \
  && a2enmod proxy_connect  \
  && a2enmod proxy_html  \
-
  && /etc/init.d/apache2 restart \
-
  && a2ensite 000-default \
  && a2ensite phpmyadmin \
  && a2ensite default-ssl \
  && a2ensite phpmyadmin-ssl.conf \
-
  && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
-
  && sed -i 's/post_max_size = 8M/post_max_size = 64M/g' /usr/local/etc/php/php.ini \
  && sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 64M/g' /usr/local/etc/php/php.ini \
  && sed -i 's/ServerName localhost/ServerName '${WP_DOMAIN_NAME}'/g' /etc/apache2/apache2.conf \
-
  && sed -i 's/ServerName localhost/ServerName '${WP_DOMAIN_NAME}'/g' /etc/apache2/sites-available/000-default.conf \
  && sed -i 's/ServerAlias www.localhost/ServerAlias www.'${WP_DOMAIN_NAME}'/g' /etc/apache2/sites-available/000-default.conf \
  && sed -i 's/ServerAdmin webmaster@localhost/ServerAdmin '${WEBMASTER_EMAIL}'/g' /etc/apache2/sites-available/000-default.conf \
-
  && sed -i 's/ServerName localhost/ServerName '${WP_DOMAIN_NAME}'/g' /etc/apache2/sites-available/default-ssl.conf \
  && sed -i 's/ServerAlias www.localhost/ServerAlias www.'${WP_DOMAIN_NAME}'/g' /etc/apache2/sites-available/default-ssl.conf \
  && sed -i 's/ServerAdmin webmaster@localhost/ServerAdmin '${WEBMASTER_EMAIL}'/g' /etc/apache2/sites-available/default-ssl.conf \
-
  && sed -i 's/ServerName phpmyadmin.localhost/ServerName '${PMA_DOMAIN_NAME}'/g' /etc/apache2/sites-available/phpmyadmin.conf \
  && sed -i 's/ServerAlias www.phpmyadmin.localhost/ServerAlias www.'${PMA_DOMAIN_NAME}'/g' /etc/apache2/sites-available/phpmyadmin.conf \
  && sed -i 's/ServerAdmin webmaster@localhost/ServerAdmin '${WEBMASTER_EMAIL}'/g' /etc/apache2/sites-available/phpmyadmin.conf \
-
  && sed -i 's/ServerName phpmyadmin.localhost/ServerName '${PMA_DOMAIN_NAME}'/g' /etc/apache2/sites-available/phpmyadmin-ssl.conf \
  && sed -i 's/ServerAlias www.phpmyadmin.localhost/ServerAlias www.'${PMA_DOMAIN_NAME}'/g' /etc/apache2/sites-available/phpmyadmin-ssl.conf \
  && sed -i 's/ServerAdmin webmaster@localhost/ServerAdmin '${WEBMASTER_EMAIL}'/g' /etc/apache2/sites-available/phpmyadmin-ssl.conf
